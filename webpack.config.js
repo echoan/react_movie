@@ -8,17 +8,22 @@ const htmlPlugin = new HtmlWebpackPlugin({
 })
 module.exports = {
     mode:'development',
+    entry: path.join(__dirname, './src/index.js'),
+    output: {
+        path: path.join(__dirname, './dist'),
+        filename: 'bundle.js'
+    },
     plugins:[
         htmlPlugin
     ],
     module:{
         rules:[
-            {test:/\.js|.jsx$/,use:'babel-loader',exclude:/node_modules/},
+            {test:/\.(js|jsx)?$/,use:'babel-loader',exclude:/node_modules/},
             // {test:/\.css$/,use:[{loader:'style-loader'},{loader:'css-loader',options:{modules:true}}]}
             // {test: /\.css$/,use:['style-loader','css-loader?modules']}
             {test: /\.css$/,use:['style-loader','css-loader']},
             {test:/\.scss$/,use:[{loader:'style-loader'},{loader:'css-loader',options:{modules:{localIdentName:'[path][name]-[local]-[hash:base64:5]'}}},{loader:'sass-loader'}]},
-            {test:/\.ttf|.woff|.woff2|.eot|.svg$/,use:['url-loader']},//打包处理字体文字的loader
+            {test:/\.(ttf|woff|woff2|eot|svg)$/,use:['url-loader']},//打包处理字体文字的loader
             { test: /\.(png|gif|bmp|jpg)$/, use: 'url-loader?limit=5000' }
         ]
     },

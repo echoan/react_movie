@@ -9,13 +9,16 @@ import Movieitem from '@/components/Movie/Movieitem'
 //导入antd的加载中的组件
 import { Spin, Alert } from 'antd'
 
+//导入antd的分页组件
+import { Pagination } from 'antd'
+
 export default class Movelist extends React.Component{
     constructor(props){
         super(props)
         this.state = {
             movies:[],//初始化时电影数组
             nowPage:parseInt(props.match.params.page)||1,//初始化时显示第几页
-            pageSize:14,//初始化时每页显示的数据条数
+            pageSize:20,//初始化时每页显示的数据条数
             total:0, //初始化时当前分类下数据总条数
             isLoading:true,//建立一个标志，根据该标志来决定loading组件的显示与否
             movieTypes:props.match.params.type//每次请求数据根据这个标志请求不同类型的电影数据
@@ -29,10 +32,8 @@ export default class Movelist extends React.Component{
         // fetch('http://vue.studyit.io/api/getlunbo').then(response=>response.json()).then(data=>{
         //     console.log(data)
         // })
-        const start = this.state.pageSize*(this.state.nowPage-1)
-        const urldata = `http://douban.uieee.com/v2/movie/${this.state.movieTypes}?start=${start}&count=${this.state.pageSize}`
         //请求豆瓣接口地址拿到正在上映的电影的数据
-        this.loadMovieListByTypeAndPage(urldata);
+        this.loadMovieListByTypeAndPage();
 
 
         // setTimeout(() => {
@@ -48,6 +49,8 @@ export default class Movelist extends React.Component{
             nowPage:parseInt(nextProps.match.params.page)||1,
             isLoading:true,
             movieTypes:nextProps.match.params.type
+        },function(){
+            this.loadMovieListByTypeAndPage();
         })
     }
     render(){
@@ -55,7 +58,10 @@ export default class Movelist extends React.Component{
         return <div>{this.renderList()}</div>
     }
     //定义请求正在热映的电影的数据
-    loadMovieListByTypeAndPage=(url)=>{
+    loadMovieListByTypeAndPage=()=>{
+        const start = this.state.pageSize*(this.state.nowPage-1)
+        //const url = `http://douban.uieee.com/v2/movie/${this.state.movieTypes}?start=${start}&count=${this.state.pageSize}`
+        const url = `https://douban-api.uieee.com/v2/movie/${this.state.movieTypes}?start=${start}&count=${this.state.pageSize}`
         fetchJSONP(url).then(response=>response.json()).then(data=>{
             console.log(data);
             if(data){
@@ -66,6 +72,18 @@ export default class Movelist extends React.Component{
                 })
             }
         })
+
+
+        //启用本地的json数据
+        // const data = require('../test_data/'+this.state.movieTypes+'.json')
+        // console.log(data);
+        // setTimeout(() => {
+        //     this.setState({
+        //         isLoading:false,//数据请求到之后，改变loading显示的标志为false，进而关闭掉loading
+        //         movies:data.subjects,//为初始化时的movies重新赋值
+        //         total:data.total//获取数据总条数
+        //     })
+        // }, 1000);
     }
     renderList=()=>{
         if(this.state.isLoading){
@@ -77,11 +95,22 @@ export default class Movelist extends React.Component{
                         />
                 </Spin>
         }else{
-            return <div style={{display:'flex',flexWrap:'wrap'}}>
-                {this.state.movies.map(item=>{
-                    return <Movieitem {...item} key={item.id}></Movieitem>
-                })}
+            return <div>
+                <div style={{display:'flex',flexWrap:'wrap'}}>
+                    {this.state.movies.map(item=>{
+                        return <Movieitem {...item} key={item.id} history={this.props.history}></Movieitem>
+                    })}
+                </div>
+                <Pagination defaultCurrent={this.state.nowPage} pageSize={this.state.pageSize} total={this.state.total} onChange={this.pageChanged}/>
             </div>
         }
+    }
+    //当页码改变的时候加载新的一页数据
+    pageChanged=(page)=>{
+        console.log(this.props)
+        //在这里不推荐手动使用 BOM 对象，来实现跳转，最好使用 路由的方法，进行编程式导航
+        // window.location.href = '/#/movie/'+this.state.movieTypes+'/'+page
+        //使用 react-router-dom 实现编程式导航
+        this.props.history.push('/movie/'+this.state.movieTypes+'/'+page)
     }
 }
