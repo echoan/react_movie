@@ -19,7 +19,7 @@ export default class App extends React.Component{
         this.state = {}
     }
     UNSAFE_componentWillMount(){
-        console.log(window.location.hash)
+        //console.log(window.location.hash)
     }
     render(){
         return <HashRouter>

@@ -63,7 +63,7 @@ export default class Movelist extends React.Component{
         //const url = `http://douban.uieee.com/v2/movie/${this.state.movieTypes}?start=${start}&count=${this.state.pageSize}`
         const url = `https://douban-api.uieee.com/v2/movie/${this.state.movieTypes}?start=${start}&count=${this.state.pageSize}`
         fetchJSONP(url).then(response=>response.json()).then(data=>{
-            console.log(data);
+            //console.log(data);
             if(data){
                 this.setState({
                     isLoading:false,//数据请求到之后，改变loading显示的标志为false，进而关闭掉loading
@@ -107,7 +107,7 @@ export default class Movelist extends React.Component{
     }
     //当页码改变的时候加载新的一页数据
     pageChanged=(page)=>{
-        console.log(this.props)
+        //console.log(this.props)
         //在这里不推荐手动使用 BOM 对象，来实现跳转，最好使用 路由的方法，进行编程式导航
         // window.location.href = '/#/movie/'+this.state.movieTypes+'/'+page
         //使用 react-router-dom 实现编程式导航

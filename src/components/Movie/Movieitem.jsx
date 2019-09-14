@@ -20,8 +20,8 @@ export default class Movieitem extends React.Component{
         </div>
     }
     goDetail=()=>{
-         console.log(this.props);
-        console.log(this.props.history);
+        //console.log(this.props);
+        //console.log(this.props.history);
         this.props.history.push('/movie/detail/'+this.props.id)
     }
 }
